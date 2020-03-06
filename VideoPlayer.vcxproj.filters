@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="VideoPlayer.cpp" />
+    <ClCompile Include="TinyCodec\tiny_codec.cpp">
+      <Filter>TinyCodec</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\adpcm.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\adpcm_data.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\escape124.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\escape130.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\pcm.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\codecs\reverse.c">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyCodec\containers\rpl.c">
+      <Filter>TinyCodec\containers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="TinyCodec">
+      <UniqueIdentifier>{b24148ae-d9e7-4e43-9806-c632af85b35b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TinyCodec\internal">
+      <UniqueIdentifier>{93a2a55a-c622-41bd-b54c-77716e753023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TinyCodec\codecs">
+      <UniqueIdentifier>{516c5e9b-464c-478f-b6be-1b2f807908e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TinyCodec\containers">
+      <UniqueIdentifier>{ffd349da-4a0a-4841-a344-ce3fdee14855}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TinyCodec\tiny_codec.h">
+      <Filter>TinyCodec</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\internal\avcodec.h">
+      <Filter>TinyCodec\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\internal\bytestream.h">
+      <Filter>TinyCodec\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\internal\common.h">
+      <Filter>TinyCodec\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\internal\get_bits.h">
+      <Filter>TinyCodec\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\codecs\adpcm.h">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyCodec\codecs\adpcm_data.h">
+      <Filter>TinyCodec\codecs</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
