@@ -1,5 +1,5 @@
 # RPL-VideoPlayer
-An experimental video player that can play RPL movies from Soul Reaver (PC))
+An experimental video player that can play RPL movies from Soul Reaver (PC)
 
 Uses components from OpenTomb
 https://github.com/opentomb/OpenTomb/
