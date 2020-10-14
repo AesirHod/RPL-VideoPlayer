@@ -22,7 +22,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <SDL.h>
 
 #include "../tiny_codec.h"
 #include "../internal/avcodec.h"
@@ -43,11 +42,11 @@ typedef struct RPLContext
     uint32_t frame_in_part;
 } RPLContext;
 
-static int read_line(SDL_RWops *pb, char* line, int bufsize)
+static int read_line(FILE *pb, char* line, int bufsize)
 {
     int i;
     uint8_t b = 0;
-    for (i = 0; (i < bufsize - 1) && SDL_RWread(pb, &b, 1, 1); i++)
+    for (i = 0; (i < bufsize - 1) && RWread(pb, &b, 1, 1); i++)
     {
         if (b == 0)
             break;
@@ -76,7 +75,7 @@ static int32_t read_int(const char* line, const char** endptr, int* error)
     return result;
 }
 
-static int32_t read_line_and_int(SDL_RWops *pb, int* error)
+static int32_t read_line_and_int(FILE *pb, int* error)
 {
     char line[RPL_LINE_LENGTH];
     const char *endptr;
@@ -114,7 +113,7 @@ static int read_fps(const char* line, uint64_t *num, uint64_t *denum)
 
 static int rpl_read_packet(struct tiny_codec_s *s, struct AVPacket *pkt)
 {
-    SDL_RWops *pb = s->input;
+    FILE *pb = s->input;
     RPLContext *rpl = (RPLContext*)s->private_context;
     int ret = -1;
     index_entry_p entry;
@@ -127,7 +126,7 @@ static int rpl_read_packet(struct tiny_codec_s *s, struct AVPacket *pkt)
         entry = &s->video.entry[s->video.entry_current];
 
         pkt->pos = (rpl->frame_in_part == 0) ? (entry->pos) : pkt->pos;
-        if(SDL_RWseek(pb, pkt->pos, RW_SEEK_SET) < 0)
+        if(RWseek(pb, pkt->pos, SEEK_SET) < 0)
             return -1;
 
         if(s->video.codec_tag == AV_CODEC_ID_ESCAPE124)
@@ -135,9 +134,9 @@ static int rpl_read_packet(struct tiny_codec_s *s, struct AVPacket *pkt)
             // We have to split Escape 124 frames because there are
             // multiple frames per chunk in Escape 124 samples.
             uint32_t frame_size;
-            SDL_ReadLE32(pb); // flags
-            frame_size = SDL_ReadLE32(pb);
-            if (SDL_RWseek(pb, -8, RW_SEEK_CUR) < 0)
+            ReadLE32(pb); // flags
+            frame_size = ReadLE32(pb);
+            if (RWseek(pb, -8, SEEK_CUR) < 0)
                 return -1;
 
             ret = av_get_packet(pb, pkt, frame_size);
@@ -161,7 +160,7 @@ static int rpl_read_packet(struct tiny_codec_s *s, struct AVPacket *pkt)
         else if(s->video.codec_tag == AV_CODEC_ID_ESCAPE130)
         {
             pkt->pos = entry->pos;
-            if(SDL_RWseek(pb, pkt->pos, RW_SEEK_SET) < 0)
+            if(RWseek(pb, pkt->pos, SEEK_SET) < 0)
                 return -1;
 
             ret = av_get_packet(pb, pkt, entry->size);
@@ -189,7 +188,7 @@ static int rpl_read_packet(struct tiny_codec_s *s, struct AVPacket *pkt)
         entry = &s->audio.entry[s->audio.entry_current];
 
         pkt->pos = entry->pos;
-        if(SDL_RWseek(pb, pkt->pos, RW_SEEK_SET) < 0)
+        if(RWseek(pb, pkt->pos, SEEK_SET) < 0)
             return -1;
 
         ret = av_get_packet(pb, pkt, entry->size);
@@ -223,7 +222,7 @@ void adpcm_decode_init(struct tiny_codec_s *avctx);
 
 int codec_open_rpl(struct tiny_codec_s *s)
 {
-    SDL_RWops *pb = s->input;
+    FILE *pb = s->input;
     s->private_context = (RPLContext*)calloc(sizeof(RPLContext), 1);
     s->free_context = free;
     RPLContext *rpl = (RPLContext*)s->private_context;
@@ -236,7 +235,7 @@ int codec_open_rpl(struct tiny_codec_s *s)
 
     char line[RPL_LINE_LENGTH];
 
-    SDL_RWseek(pb, 0, RW_SEEK_SET);
+    RWseek(pb, 0, SEEK_SET);
     // The header for RPL/ARMovie files is 21 lines of text
     // containing the various header fields.  The fields are always
     // in the same order, and other text besides the first
@@ -365,7 +364,7 @@ int codec_open_rpl(struct tiny_codec_s *s)
     error |= read_line(pb, line, sizeof(line));  // offset to key frame list
 
     // Read the index
-    SDL_RWseek(pb, chunk_catalog_offset, RW_SEEK_SET);
+    RWseek(pb, chunk_catalog_offset, SEEK_SET);
     total_audio_size = 0;
 
     s->video.rgba = (uint8_t*)malloc(4 * s->video.width * s->video.height);

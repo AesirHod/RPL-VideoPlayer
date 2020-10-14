@@ -21,7 +21,6 @@
 
 #include <inttypes.h>
 #include <stdlib.h>
-#include <SDL.h>
 
 #include "../tiny_codec.h"
 #define BITSTREAM_READER_LE

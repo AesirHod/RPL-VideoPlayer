@@ -26,7 +26,6 @@
 #include <inttypes.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <SDL.h>
 
 #include "../internal/avcodec.h"
 #include "../tiny_codec.h"

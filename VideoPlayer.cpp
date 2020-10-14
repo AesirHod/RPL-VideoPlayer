@@ -54,15 +54,6 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	//SDL_Surface* screenSurface = SDL_GetWindowSurface(window);
-	//if (screenSurface == nullptr)
-	//{
-	//	SDL_Log("Screen surface could not be created: %s\n", SDL_GetError());
-	//	SDL_DestroyWindow(window);
-	//	SDL_Quit();
-	//	return -1;
-	//}
-
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	if (renderer == nullptr)
 	{
@@ -85,7 +76,7 @@ int main(int argc, char** argv)
 	SDL_AudioSpec audioSpec;
 	SDL_zero(audioSpec);
 
-	codec_init(&engine_video, SDL_RWFromFile(argv[1], "rb"));
+	codec_init(&engine_video, RWFromFile(argv[1], "rb"));
 	if (engine_video.input)
 	{
 		if (0 == codec_open_rpl(&engine_video))
@@ -121,35 +112,11 @@ int main(int argc, char** argv)
 			}
 		}
 
-		//while (SDL_GetQueuedAudioSize(audioDevice) < 30000)
-		//{
-		//	codec_decode_audio(&engine_video);
-		//	//int len = audioSpec.samples << 1;
-		//	uint8_t* buffStart = engine_video.audio.buff;// + engine_video.audio.buff_offset;
-		//	uint8_t* buffEnd = engine_video.audio.buff + engine_video.audio.buff_size;
-		//	uint8_t* buff = buffStart;
-		//	//while ((buff + len) < buffEnd)
-		//	//{
-		//	//	SDL_QueueAudio(audioDevice, buff, len);
-		//	//	buff += len;
-		//	//}
-		//	//if (buff < buffEnd)
-		//	//{
-		//	//	SDL_QueueAudio(audioDevice, buff, buffEnd - buff);
-		//	//}
-		//	SDL_QueueAudio(audioDevice, buff, buffEnd - buff);
-
-		//	//SDL_PauseAudioDevice(audioDevice, 0);
-		//}
-
 		uint64_t newtime = SDL_GetPerformanceCounter();
 		time_ns = newtime - oldtime;
 		time_ns *= 1e9;
 		time_ns /= frequency;
 		oldtime = newtime;
-
-		//SDL_SetRenderTarget(renderer, texTarget);
-		//SDL_RenderClear(renderer);
 
 		if (engine_video.input)
 		{

@@ -10,6 +10,7 @@
 #define TINY_CODEC_H
 
 #include <inttypes.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,7 +60,7 @@ extern "C" {
 
 	typedef struct tiny_codec_s
 	{
-		struct SDL_RWops* input;
+		FILE* input;
 		void* private_context;
 		void              (*free_context)(void* context);
 		int               (*packet)(struct tiny_codec_s* s, struct AVPacket* pkt);
@@ -115,17 +116,24 @@ extern "C" {
 
 
 	void av_init_packet(AVPacket* pkt);
-	int av_get_packet(SDL_RWops* pb, AVPacket* pkt, int size);
+	int av_get_packet(FILE* pb, AVPacket* pkt, int size);
 	void av_packet_unref(AVPacket* pkt);
 
 
-	void codec_init(struct tiny_codec_s* s, SDL_RWops* rw);
+	void codec_init(struct tiny_codec_s* s, FILE* rw);
 	void codec_clear(struct tiny_codec_s* s);
 	void codec_simplify_fps(struct tiny_codec_s* s);
 	uint64_t codec_inc_time(struct tiny_codec_s* s, uint64_t time_ns); // return current frame
 	uint32_t codec_resize_audio_buffer(struct tiny_codec_s* s, uint32_t sample_size, uint32_t samples);
 
 	int codec_open_rpl(struct tiny_codec_s* s);
+
+	FILE* RWFromFile(const char* file, const char* mode);
+	int RWclose(FILE* context);
+	long long RWtell(FILE* context);
+	long long RWseek(FILE* context, long long offset, int whence);
+	int RWread(FILE* context, void* ptr, int size, int maxnum);
+	unsigned long ReadLE32(FILE* src);
 
 #define codec_decode_audio(s) (((s)->packet((s), &(s)->audio.pkt) >= 0) && (s)->audio.decode((s), &(s)->audio.pkt))
 #define codec_decode_video(s) (((s)->packet((s), &(s)->video.pkt) >= 0) && (s)->video.decode((s), &(s)->video.pkt))

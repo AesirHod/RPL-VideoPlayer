@@ -33,7 +33,6 @@
 #include <inttypes.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <SDL.h>
 
 #include "../tiny_codec.h"
 #include "../internal/avcodec.h"

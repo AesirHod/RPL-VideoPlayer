@@ -6,7 +6,6 @@
 
 #include <inttypes.h>
 #include <stdlib.h>
-#include <SDL.h>
 
 #include "tiny_codec.h"
 
@@ -20,7 +19,7 @@ void av_init_packet(AVPacket* pkt)
 	pkt->stream_index = 0;
 }
 
-int av_get_packet(SDL_RWops* pb, AVPacket* pkt, int size)
+int av_get_packet(FILE* pb, AVPacket* pkt, int size)
 {
 	int ret = 0;
 	if (pkt->allocated_size < size)
@@ -36,8 +35,8 @@ int av_get_packet(SDL_RWops* pb, AVPacket* pkt, int size)
 	pkt->pts = 0;
 	pkt->duration = 0;
 	pkt->flags = 0;
-	ret = SDL_RWread(pb, pkt->data, 1, size);
-	pkt->pos = SDL_RWtell(pb);
+	ret = RWread(pb, pkt->data, 1, size);
+	pkt->pos = RWtell(pb);
 	return ret;
 }
 
@@ -52,7 +51,7 @@ void av_packet_unref(AVPacket* pkt)
 	pkt->size = 0;
 }
 
-void codec_init(struct tiny_codec_s* s, SDL_RWops* rw)
+void codec_init(struct tiny_codec_s* s, FILE* rw)
 {
 	s->input = rw;
 	s->private_context = NULL;
@@ -155,7 +154,7 @@ void codec_clear(struct tiny_codec_s* s)
 	}
 	if (s->input)
 	{
-		SDL_RWclose(s->input);
+		RWclose(s->input);
 		s->input = NULL;
 	}
 }
@@ -204,4 +203,36 @@ uint32_t codec_resize_audio_buffer(struct tiny_codec_s* s, uint32_t sample_size,
 	}
 
 	return ret;
+}
+
+FILE* RWFromFile(const char* file, const char* mode)
+{
+	return fopen(file, mode);
+}
+
+int RWclose(FILE* context)
+{
+	return fclose(context);
+}
+
+long long RWtell(FILE* context)
+{
+	return ftell(context);
+}
+
+long long RWseek(FILE* context, long long offset, int whence)
+{
+	return _fseeki64(context, offset, whence);
+}
+
+int RWread(FILE* context, void* ptr, int size, int maxnum)
+{
+	return fread(ptr, size, maxnum, context);
+}
+
+unsigned long ReadLE32(FILE* src)
+{
+	unsigned long output = 0;
+	fread(&output, sizeof(unsigned long), 1, src);
+	return output;
 }
